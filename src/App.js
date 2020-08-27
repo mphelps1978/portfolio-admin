@@ -16,7 +16,7 @@ const App = () => {
             <Link to="/projects">Projects</Link>
           </li>
           <li>
-            <Link to="/resume">Dashboard</Link>
+            <Link to="/resume">Resume Items</Link>
           </li>
         </ul>
         <hr />
