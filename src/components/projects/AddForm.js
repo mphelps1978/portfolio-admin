@@ -1,31 +1,46 @@
 import React, { useState } from 'react'
+import {gql, useMutation} from '@apollo/client'
 
+const ADD_PROJECT = gql `
+  mutation ProjectItemInput($proj_name: String!, $description: String!, $gh_link: String!, $live_link: String!, $image_url: String!) {
+    createProjectItem(
+      proj_name: $proj_name,
+      description: $description,
+      gh_link: $gh_link,
+      live_link: $live_link,
+      image_url: $image_url
+      ) {
+        _id
+        proj_name
+      }
+  }
+`
 
 const AddForm = (props) => {
-
-  const [newProject, setNewProject] = useState({
-    proj_name: "",
-    description: "",
-    gh_link: "",
-    live_link: "",
-    image_url: ""
-  })
-
-  const changeHandler = e => {
-    setNewProject({...newProject, [e.target.name]: e.target.value})
-  }
+  const [createProjectItem] = useMutation(ADD_PROJECT)
+  const [proj_name, setProj_name] = useState('')
+  const [description, setDescription] = useState('')
+  const [gh_link, setGh_link] = useState('')
+  const [live_link, setLive_link] = useState('')
+  const [image_url, setImage_url] = useState('')
 
   const submitForm = e => {
     e.preventDefault()
-    props.addNewProject(newProject)
-    setNewProject({
-      proj_name: "",
-      description: "",
-      gh_link: "",
-      live_link: "",
-      image_url: ""
+    createProjectItem({ variables: {proj_name, description, gh_link, live_link, image_url}})
+    .then(res =>{
+      console.log('Success!')
     })
+    .catch(err => {
+      console.log(err)
+    })
+
+    setProj_name('')
+    setDescription('')
+    setGh_link('')
+    setLive_link('')
+    setImage_url('')
   }
+
 
   return (
     <div>
@@ -33,44 +48,35 @@ const AddForm = (props) => {
       <h2>Add a Project</h2>
 
       <form onSubmit = {submitForm}>
+
       <label>
         Project Name:
         <input
-          type = 'text'
-          name = 'proj_name'
-          value = {newProject.proj_name}
-          onChange = {changeHandler}
+          value = {proj_name}
+          onChange = {({target}) => setProj_name(target.value)}
           />
         </label>
       <label>Description</label>
       <input
-        type = 'text'
-        name = 'description'
-        onChange = {changeHandler}
-        value = {newProject.description}
+        value = {description}
+        onChange = {({target}) => setDescription(target.value)}
         />
         <label>GitHub Link</label>
       <input
-        type = 'text'
-        name = 'gh_link'
-        onChange = {changeHandler}
-        value = {newProject.gh_link}
+        value = {gh_link}
+        onChange = {({target}) => setGh_link(target.value)}
         />
         <label>Live Link</label>
       <input
-        type = 'text'
-        name = 'live_link'
-        onChange = {changeHandler}
-        value = {newProject.live_link}
+        value = {live_link}
+        onChange = {({target}) => setLive_link(target.value)}
         />
         <label>Preview Image</label>
       <input
-        type = 'text'
-        name = 'image_url'
-        onChange = {changeHandler}
-        value = {newProject.image_url}
+        value = {image_url}
+        onChange = {({target}) => setImage_url(target.value)}
         />
-        <button>Submit</button>
+        <button type = 'submit'>Submit</button>
       </form>
     </div>
   )
