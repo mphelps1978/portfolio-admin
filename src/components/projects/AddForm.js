@@ -2,14 +2,15 @@ import React, { useState } from 'react'
 import {gql, useMutation} from '@apollo/client'
 
 const ADD_PROJECT = gql `
-  mutation ProjectItemInput($proj_name: String!, $description: String!, $gh_link: String!, $live_link: String!, $image_url: String!) {
+  mutation createProjectItem($proj_name: String!, $description: String!, $gh_link: String!, $live_link: String!, $image_url: String!) {
     createProjectItem(
-      proj_name: $proj_name,
-      description: $description,
-      gh_link: $gh_link,
-      live_link: $live_link,
-      image_url: $image_url
-      ) {
+      ProjectItemInput:{
+        proj_name: $proj_name
+        description: $description,
+        gh_link: $gh_link,
+        live_link: $live_link,
+        image_url: $image_url
+      }) {
         _id
         proj_name
       }
@@ -18,11 +19,21 @@ const ADD_PROJECT = gql `
 
 const AddForm = (props) => {
   const [createProjectItem] = useMutation(ADD_PROJECT)
-  const [proj_name, setProj_name] = useState('')
-  const [description, setDescription] = useState('')
-  const [gh_link, setGh_link] = useState('')
-  const [live_link, setLive_link] = useState('')
-  const [image_url, setImage_url] = useState('')
+  const [details, setDetails] = useState({
+    proj_name: '',
+    description: '',
+    gh_link: '',
+    live_link: '',
+    image_url: ''
+  })
+
+  const {proj_name, description, gh_link, live_link, image_url} = details
+
+  // const [proj_name, setProj_name] = useState('')
+  // const [description, setDescription] = useState('')
+  // const [gh_link, setGh_link] = useState('')
+  // const [live_link, setLive_link] = useState('')
+  // const [image_url, setImage_url] = useState('')
 
   const submitForm = e => {
     e.preventDefault()
@@ -34,11 +45,19 @@ const AddForm = (props) => {
       console.log(err)
     })
 
-    setProj_name('')
-    setDescription('')
-    setGh_link('')
-    setLive_link('')
-    setImage_url('')
+    setDetails({
+      proj_name: '',
+      description: '',
+      gh_link: '',
+      live_link: '',
+      image_url: ''
+  })}
+
+  const changeDetails = (e) => {
+    setDetails({
+      ...details,
+      [e.target.name]: e.target.value
+    })
   }
 
 
@@ -52,29 +71,34 @@ const AddForm = (props) => {
       <label>
         Project Name:
         <input
+          name = 'proj_name'
           value = {proj_name}
-          onChange = {({target}) => setProj_name(target.value)}
+          onChange = {changeDetails}
           />
         </label>
       <label>Description</label>
       <input
+        name = 'description'
         value = {description}
-        onChange = {({target}) => setDescription(target.value)}
+        onChange = {changeDetails}
         />
         <label>GitHub Link</label>
       <input
+        name  = 'gh_link'
         value = {gh_link}
-        onChange = {({target}) => setGh_link(target.value)}
+        onChange = {changeDetails}
         />
         <label>Live Link</label>
       <input
+        name = 'live_link'
         value = {live_link}
-        onChange = {({target}) => setLive_link(target.value)}
+        onChange = {changeDetails}
         />
         <label>Preview Image</label>
       <input
+        name = 'image_url'
         value = {image_url}
-        onChange = {({target}) => setImage_url(target.value)}
+        onChange = {changeDetails}
         />
         <button type = 'submit'>Submit</button>
       </form>
