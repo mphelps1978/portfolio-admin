@@ -4,8 +4,11 @@ import Resume from "./components/resume/Resume";
 import Projects from "./components/projects/Projects";
 import Home from "./components/Home";
 
+
+
 const App = () => {
-  return (
+
+    return (
     <>
       <div>
         <ul>
