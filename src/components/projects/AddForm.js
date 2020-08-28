@@ -36,7 +36,7 @@ const AddForm = (props) => {
   // const [image_url, setImage_url] = useState('')
 
   const submitForm = e => {
-    e.preventDefault()
+    // e.preventDefault()
     createProjectItem({ variables: {proj_name, description, gh_link, live_link, image_url}})
     .then(res =>{
       console.log('Success!')

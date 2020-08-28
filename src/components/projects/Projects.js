@@ -1,19 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 
 import DisplayProjects from "./DisplayProjects";
-import AddForm from "./AddForm";
 
 
 
 const Projects = () => {
-  const[projects, setProjects] = useState([])
 
   return (
     <div>
       <h1>Projects Page</h1>
-      <DisplayProjects projects = {projects} />
+      <DisplayProjects />
       <br />
-      <AddForm setProjects = {setProjects} />
     </div>
   );
 };
