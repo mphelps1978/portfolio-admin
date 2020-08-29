@@ -1,21 +1,7 @@
 import React, { useState } from 'react'
 import {gql, useMutation} from '@apollo/client'
+import { GET_ALL_PROJECTS, ADD_PROJECT } from '../helpers/queries'
 
-const ADD_PROJECT = gql `
-  mutation createProjectItem($proj_name: String!, $description: String!, $gh_link: String!, $live_link: String!, $image_url: String!) {
-    createProjectItem(
-      ProjectItemInput:{
-        proj_name: $proj_name
-        description: $description,
-        gh_link: $gh_link,
-        live_link: $live_link,
-        image_url: $image_url
-      }) {
-        _id
-        proj_name
-      }
-  }
-`
 
 const AddForm = (props) => {
   const [createProjectItem] = useMutation(ADD_PROJECT)
@@ -29,20 +15,13 @@ const AddForm = (props) => {
 
   const {proj_name, description, gh_link, live_link, image_url} = details
 
-  // const [proj_name, setProj_name] = useState('')
-  // const [description, setDescription] = useState('')
-  // const [gh_link, setGh_link] = useState('')
-  // const [live_link, setLive_link] = useState('')
-  // const [image_url, setImage_url] = useState('')
-
   const submitForm = e => {
-    // e.preventDefault()
-    createProjectItem({ variables: {proj_name, description, gh_link, live_link, image_url}})
-    .then(res =>{
-      console.log('Success!')
-    })
-    .catch(err => {
-      console.log(err)
+    e.preventDefault()
+    createProjectItem({
+      variables: {proj_name, description, gh_link, live_link, image_url},
+      refetchQueries: [{query: GET_ALL_PROJECTS}]
+
+
     })
 
     setDetails({
