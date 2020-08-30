@@ -1,31 +1,14 @@
 import React from "react";
 import { Route, Link, Switch } from "react-router-dom";
-
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
-import { List, ListItem, ListItemText, Typography, AppBar, Toolbar } from "@material-ui/core";
-
-import Home from "./components/Home";
+import { List, ListItem, ListItemText, Typography } from "@material-ui/core";
 import Projects from "./components/projects/Projects";
 import Resume from "./components/resume/Resume";
+import Home from "./components/Home";
 
-const client = new ApolloClient({
-  uri: "http://localhost:5000/api",
-  cache: new InMemoryCache(),
-});
-
-const App = () => {
+const Navbar = (props) => {
   return (
     <>
-    <div>
-    <ApolloProvider client={client}>
-    <AppBar color="primary" position="static">
-    <Toolbar>
-    <Typography variant="title" color="inherit">
-    Portfolio Administration
-    </Typography>
-    </Toolbar>
-    </AppBar>
-    <List component="nav">
+      <List component="nav">
         <ListItem component="div">
           <ListItemText inset>
             <Typography color="inherit" variant="title">
@@ -56,10 +39,8 @@ const App = () => {
           <Resume />
         </Route>
       </Switch>
-      </ApolloProvider>
-    </div>
     </>
   );
 };
 
-export default App;
+export default Navbar;
