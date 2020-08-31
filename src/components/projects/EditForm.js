@@ -1,65 +1,79 @@
-import React, { useState } from 'react'
-import { useMutation } from '@apollo/client'
-import { GET_ALL_PROJECTS, EDIT_PROJECT } from '../helpers/queries'
+import React, { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
+import { useMutation, useQuery } from '@apollo/client'
+import { EDIT_PROJECT, GET_ALL_PROJECTS, GET_PROJECT_BY_ID} from '../helpers/queries'
 
 
-const AddForm = (props) => {
-  console.log(props.id)
-  const [createProjectItem] = useMutation(EDIT_PROJECT)
-  const [details, setDetails] = useState({
-    proj_name: props.name,
-    description: props.desc,
-    gh_link: props.gh,
-    live_link: props.live,
-    image_url: props.img
+
+
+const EditForm = (props) => {
+  const params = useParams()
+  const id = params.toString()
+  console.log(id);
+  const [editProjectItem] = useMutation(EDIT_PROJECT)
+  const {loading, data, error} = useQuery(GET_PROJECT_BY_ID, {variables: {id},})
+  const [details, setDetails] = useState({})
+  const [formEntry, setFormEntry] = useState({
+    _id: id,
+    proj_name: '',
+    description: '',
+    gh_link: '',
+    live_link: '',
+    image_url: '',
   })
 
-  const id = props.id
-  const {proj_name, description, gh_link, live_link, image_url} = details
+
+
+
+
+
+  const {_id, proj_name, description, gh_link, live_link, image_url} = formEntry
 
   const submitForm = e => {
     e.preventDefault()
-    createProjectItem({
+
+    editProjectItem({
       variables: { id, proj_name, description, gh_link, live_link, image_url},
       refetchQueries: [{query: GET_ALL_PROJECTS}]
-
-
     })
-
-    setDetails({
-      proj_name: '',
-      description: '',
-      gh_link: '',
-      live_link: '',
-      image_url: ''
-  })
     props.close()
-}
+  }
+
 
   const changeDetails = (e) => {
-    setDetails({
-      ...details,
+    e.preventDefault()
+    setFormEntry({
+      ...formEntry,
       [e.target.name]: e.target.value
     })
   }
 
+  useEffect(()=> {
+    if(data){
+      setDetails(data.projectById)
+    }
+  },[data])
 
+
+  if (loading) return '...Loading';
+  if (error) return <p>ERROR: {error.message}</p>;
+  if (!data) return <p>Not found</p>;
   return (
-    <div key = {props.id}>
+    <div key = {_id}>
 
-      <h2>Edit {props.name}</h2>
+    <h2>Edit {proj_name}</h2>
 
-      <form onSubmit = {submitForm}>
+    <form onSubmit = {submitForm} >
 
-      <label>
-        Project Name:
-        <input
-          name = 'proj_name'
-          value = {details.proj_name}
-          onChange = {changeDetails}
-          />
-        </label>
-      <label>Description</label>
+    <label>
+    Project Name:
+    <input
+    name = 'proj_name'
+    value = {details.proj_name}
+    onChange = {changeDetails}
+    />
+    </label>
+    <label>Description</label>
       <input
         name = 'description'
         value = {details.description}
@@ -87,6 +101,7 @@ const AddForm = (props) => {
       </form>
     </div>
   )
-  }
+}
 
-export default AddForm
+
+export default EditForm

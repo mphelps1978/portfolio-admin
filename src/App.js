@@ -7,6 +7,8 @@ import { List, ListItem, ListItemText, Typography, AppBar, Toolbar } from "@mate
 import Home from "./components/Home";
 import Projects from "./components/projects/Projects";
 import Resume from "./components/resume/Resume";
+import AddForm from "./components/projects/AddForm";
+import EditForm from "./components/projects/EditForm"
 
 const client = new ApolloClient({
   uri: "http://localhost:5000/api",
@@ -20,7 +22,7 @@ const App = () => {
     <ApolloProvider client={client}>
     <AppBar color="primary" position="static">
     <Toolbar>
-    <Typography variant="title" color="inherit">
+    <Typography variant="h2" color="inherit">
     Portfolio Administration
     </Typography>
     </Toolbar>
@@ -28,17 +30,17 @@ const App = () => {
     <List component="nav">
         <ListItem component="div">
           <ListItemText inset>
-            <Typography color="inherit" variant="title">
+            <Typography color="inherit" variant="h6">
               <Link to="/">Home</Link>
             </Typography>
           </ListItemText>
           <ListItemText inset>
-            <Typography color="inherit" variant="title">
+            <Typography color="inherit" variant="h6">
               <Link to="/projects">Projects</Link>
             </Typography>
           </ListItemText>
           <ListItemText inset>
-            <Typography color="inherit" variant="title">
+            <Typography color="inherit" variant="h6">
               <Link to="/resume">Resume Items</Link>
             </Typography>
           </ListItemText>
@@ -46,15 +48,11 @@ const App = () => {
       </List>
 
       <Switch>
-        <Route exact path="/">
-          <Home />
-        </Route>
-        <Route path="/projects">
-          <Projects />
-        </Route>
-        <Route path="/resume">
-          <Resume />
-        </Route>
+        <Route exact path="/" component = {Home} />
+        <Route path="/projects" component = {Projects} />
+        <Route path="/resume" component = {Resume} />
+        <Route path="/addproject" component = {AddForm} />
+        <Route path="/edit/:id"/>
       </Switch>
       </ApolloProvider>
     </div>

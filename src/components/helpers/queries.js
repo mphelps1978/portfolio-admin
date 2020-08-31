@@ -29,6 +29,22 @@ export const ADD_PROJECT = gql `
   }
 `
 
+export const GET_PROJECT_BY_ID = gql`
+query projectById($id: ID!) {
+  projectById(_id: $id) {
+    _id
+    proj_name
+    description
+    gh_link
+    live_link
+    image_url
+  }
+}
+
+
+
+`
+
 export const REMOVE_PROJECT = gql`
 mutation deleteProject ($id: ID!) {
   deleteProject(_id: $id) {
@@ -39,9 +55,10 @@ mutation deleteProject ($id: ID!) {
 `
 
 export const EDIT_PROJECT = gql`
-mutation editProjectItem($id: ID, $proj_name: String!, $description: String!, $gh_link: String!, $live_link: String!, $image_url: String!){
+mutation editProjectItem($id: ID!, $proj_name: String!, $description: String!, $gh_link: String!, $live_link: String!, $image_url: String!){
   editProjectItem(_id: $id,
     ProjectItemInput:{
+      _id: $id
       proj_name: $proj_name
       description: $description,
       gh_link: $gh_link,

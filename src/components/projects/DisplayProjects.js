@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Link, useHistory } from 'react-router-dom'
 import { useQuery, useMutation } from '@apollo/client'
 
 import { GET_ALL_PROJECTS, REMOVE_PROJECT } from '../helpers/queries'
@@ -8,7 +9,7 @@ import EditIcon from '@material-ui/icons/Edit'
 import AddForm from './AddForm'
 import EditForm from './EditForm'
 import AlertMessage from '../Alerts/AlertMessage'
-import { Grid, Typography, Card, CardActionArea, CardActions, CardContent, CardMedia, Button, Modal, Backdrop, Fade } from '@material-ui/core'
+import { Grid, Typography, Card, CardActionArea, CardActions, CardContent, CardMedia, Button, Modal, Backdrop, Fade, CircularProgress } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -22,13 +23,20 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
   },
+  progress: {
+    display: 'flex',
+    justifyContent: 'center',
+    '& > * + *': {
+      marginLeft: theme.spacing(2)
+    }
+  }
 }));
 
 
 const DisplayProjects = () => {
 
   const styles = useStyles()
-
+  const history = useHistory()
   const [deleteItem] = useMutation(REMOVE_PROJECT)
   const { loading, error, data } = useQuery(GET_ALL_PROJECTS)
   const [status, setStatusBase] = useState('')
@@ -76,10 +84,15 @@ const DisplayProjects = () => {
   };
   const handleEditClose = () => {
     setEditOpen(false);
+    history.push('/projects')
   };
 
 
-  if (loading) return '...Loading'
+  if (loading) return (
+    <div className = {styles.progress}>
+    <CircularProgress />
+    </div>
+  )
   if (error) return `Error: ${error.message}`
   return (
     <div>
@@ -87,8 +100,8 @@ const DisplayProjects = () => {
         <Grid container spacing={8} justify='center' alignItems='center'>
           {data.projects.map(p => {
             return (
-              <Grid item >
-                <Card key={p._id}>
+              <Grid item key={p._id}>
+                <Card >
                   <CardActionArea>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                       <CardMedia
@@ -113,29 +126,23 @@ const DisplayProjects = () => {
                       <DeleteIcon onClick={e => onDelete(p._id, e)} />
                     </Button>
                     <Button onClick={handleEditOpen}>
+                    <Link to = {`/edit/${p._id}`}>
                       <Modal
                         open={editOpen}
                         onClose={handleEditClose}
-                        closeAfterTransition
+                        // closeAfterTransition
                         BackdropComponent={Backdrop}
                         className={styles.modal}
                       >
                         <Fade in={editOpen}>
                           <div className={styles.paper}>
-                            <EditForm
-                              id={p._id}
-                              close={handleEditClose}
-                              name={p.proj_name}
-                              desc={p.description}
-                              gh={p.gh_link}
-                              live={p.live_link}
-                              img={p.image_url}
-                            />
-                          </div>
-                        </Fade>
-                      </Modal>
+                            <EditForm />
+                            </div>
+                            </Fade>
+                            </Modal>
+                            </Link>
                       <EditIcon />
-                    </Button>
+                      </Button>
                   </CardActions>
                 </Card>
                 { status ? <AlertMessage key={status.key} message={status.msg} /> : null}
